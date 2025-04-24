@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D23A35F3-1F8B-467B-9B94-0A81F8BD0397}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonDirectoryApi", "src\PersonDirectoryApi\PersonDirectoryApi.csproj", "{1BD97FD9-35CD-4914-B350-036B68033871}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9E7882FA-784A-4AD1-BB8E-26997B4C12E5}"
+	ProjectSection(SolutionItems) = preProject
+		compose.yaml = compose.yaml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1BD97FD9-35CD-4914-B350-036B68033871} = {D23A35F3-1F8B-467B-9B94-0A81F8BD0397}
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1BD97FD9-35CD-4914-B350-036B68033871}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BD97FD9-35CD-4914-B350-036B68033871}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BD97FD9-35CD-4914-B350-036B68033871}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BD97FD9-35CD-4914-B350-036B68033871}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

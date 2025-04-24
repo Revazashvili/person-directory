@@ -1,0 +1,6 @@
+﻿services:
+  persondirectoryapi:
+    image: persondirectoryapi
+    build:
+      context: .
+      dockerfile: src/PersonDirectoryApi/Dockerfile
