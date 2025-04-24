@@ -1,0 +1,19 @@
+using PersonDirectoryApi.Dtos;
+using PersonDirectoryApi.Entities;
+
+namespace PersonDirectoryApi.Services;
+
+public interface IPersonService
+{
+    Task<Person?> CreateAsync(PersonCreateDto dto, CancellationToken cancellationToken);
+}
+
+public class PersonService : IPersonService
+{
+    public Task<Person?> CreateAsync(PersonCreateDto dto, CancellationToken cancellationToken)
+    {
+        // იგივე პირადი ნომრით ხომ არ არსებობს ვინმე
+        // 
+        throw new NotImplementedException();
+    }
+}

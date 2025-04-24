@@ -1,4 +1,4 @@
-namespace PersonDirectoryApi.Contracts;
+namespace PersonDirectoryApi;
 
 public class Either<TLeft, TRight>
 {
