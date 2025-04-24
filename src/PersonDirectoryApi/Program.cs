@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Reflection;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -32,6 +33,17 @@ builder.Services.AddDbContext<PersonContext>(builder =>
 var app = builder.Build();
 
 app.MapOpenApi();
+
+app.Use((context, next) =>
+{
+    var language = context.Request.Headers.AcceptLanguage.ToString();
+
+    var culture = CultureInfo.GetCultureInfo(language);
+    
+    CultureInfo.CurrentCulture = culture;
+    CultureInfo.CurrentUICulture = culture;
+    return next();
+});
 
 app.MapControllers();
 
