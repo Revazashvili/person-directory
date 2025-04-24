@@ -6,7 +6,8 @@ public interface IMultimediaService
 {
     Task<string> UploadAsync(IFormFile file, CancellationToken cancellationToken);
     Task<Multimedia> GetAsync(string fileName, CancellationToken cancellationToken);
-    Task RemoveAsync(string imageUrl, CancellationToken cancellationToken);
+    Task RemoveAsync(string imageUrl);
+    Task RemoveByNameAsync(string fileName);
 }
 
 public class MultimediaService : IMultimediaService
@@ -31,10 +32,8 @@ public class MultimediaService : IMultimediaService
         return GetImageUrl(fileName);
     }
 
-    public async Task<Multimedia> GetAsync(string imageUrl, CancellationToken cancellationToken)
+    public async Task<Multimedia> GetAsync(string fileName, CancellationToken cancellationToken)
     {
-        var fileName = imageUrl.Split('/').Last();
-        
         var filePath = GetFilePath(fileName);
         
         var mimeType = $"image/{Path.GetExtension(fileName).TrimStart('.')}";
@@ -44,10 +43,17 @@ public class MultimediaService : IMultimediaService
         return new Multimedia(mimeType, bytes);
     }
 
-    public async Task RemoveAsync(string imageUrl, CancellationToken cancellationToken)
+    public async Task RemoveAsync(string imageUrl)
     {
         var fileName = imageUrl.Split('/').Last();
         
+        var filePath = GetFilePath(fileName);
+        
+        File.Delete(filePath);
+    }
+    
+    public async Task RemoveByNameAsync(string fileName)
+    {
         var filePath = GetFilePath(fileName);
         
         File.Delete(filePath);
