@@ -3,12 +3,12 @@ using PersonDirectoryApi.Entities;
 
 namespace PersonDirectoryApi.Services;
 
-public interface IPersonService
+internal interface IPersonService
 {
     Task<Person?> CreateAsync(PersonCreateDto dto, CancellationToken cancellationToken);
 }
 
-public class PersonService : IPersonService
+internal class PersonService : IPersonService
 {
     public Task<Person?> CreateAsync(PersonCreateDto dto, CancellationToken cancellationToken)
     {

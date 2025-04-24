@@ -7,18 +7,21 @@ using PersonDirectoryApi;
 using PersonDirectoryApi.Dtos;
 using PersonDirectoryApi.Localization;
 using PersonDirectoryApi.Persistence.Repositories;
+using PersonDirectoryApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddValidatorsFromAssemblies([Assembly.GetExecutingAssembly()]);
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
 builder.Services.AddSingleton<IStringLocalizer, StringLocalizer>();
+builder.Services.AddSingleton<IMultimediaService, MultimediaService>();
 
 var connectionString = builder.Configuration.GetConnectionString(nameof(PersonContext));
 builder.Services.AddDbContext<PersonContext>(builder =>
