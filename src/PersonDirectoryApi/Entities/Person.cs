@@ -17,10 +17,10 @@ public class Person
 
     public City City { get; private set; }
     public ICollection<PhoneNumber> PhoneNumbers { get; private set; } = new List<PhoneNumber>();
-    public ICollection<PersonRelation> Relations { get; private set; } = new List<PersonRelation>();
+    public ICollection<PersonRelationship> Relationships { get; private set; } = new List<PersonRelationship>();
 
     public static Person Create(string firstName, string lastName, string personalNumber, Gender gender, DateTime birthDate, int cityId, string imageUrl, 
-        List<PhoneNumber> phoneNumbers, List<PersonRelation> relations)
+        List<PhoneNumber> phoneNumbers, List<PersonRelationship> relationships)
     {
         return new Person
         {
@@ -31,7 +31,7 @@ public class Person
             CityId = cityId,
             ImageUrl = imageUrl,
             PhoneNumbers = phoneNumbers,
-            Relations = relations,
+            Relationships = relationships,
             BirthDate = birthDate
         };
     }

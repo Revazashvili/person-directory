@@ -4,9 +4,9 @@ using PersonDirectoryApi.Entities;
 
 namespace PersonDirectoryApi.Persistence.EntityConfigurations;
 
-public class PersonRelationConfiguration : IEntityTypeConfiguration<PersonRelation>
+public class PersonRelationConfiguration : IEntityTypeConfiguration<PersonRelationship>
 {
-    public void Configure(EntityTypeBuilder<PersonRelation> builder)
+    public void Configure(EntityTypeBuilder<PersonRelationship> builder)
     {
         builder.HasKey(r => r.Id);
         
@@ -25,7 +25,7 @@ public class PersonRelationConfiguration : IEntityTypeConfiguration<PersonRelati
             .IsRequired();
                 
         builder.HasOne(r => r.Person)
-            .WithMany(p => p.Relations)
+            .WithMany(p => p.Relationships)
             .HasForeignKey(r => r.PersonPersonalNumber)
             .OnDelete(DeleteBehavior.Restrict);
                 
@@ -37,6 +37,6 @@ public class PersonRelationConfiguration : IEntityTypeConfiguration<PersonRelati
         builder.HasIndex(r => new { r.PersonPersonalNumber, r.RelatedPersonPersonalNumber, r.Type })
             .IsUnique();
                 
-        builder.ToTable("person_relations");
+        builder.ToTable("person_relationships");
     }
 }

@@ -13,7 +13,7 @@ public class PersonContext : DbContext
     public DbSet<Person> Persons { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<PhoneNumber> PhoneNumbers { get; set; }
-    public DbSet<PersonRelation> PersonRelation { get; set; }
+    public DbSet<PersonRelationship> PersonRelation { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

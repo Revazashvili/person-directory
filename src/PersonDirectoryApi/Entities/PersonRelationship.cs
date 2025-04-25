@@ -2,7 +2,7 @@ using PersonDirectoryApi.Enums;
 
 namespace PersonDirectoryApi.Entities;
 
-public class PersonRelation
+public class PersonRelationship
 {
     public int Id { get; set; }
     public RelationType Type { get; private set; }
@@ -11,9 +11,9 @@ public class PersonRelation
     public string RelatedPersonPersonalNumber { get; private set; }
     public Person RelatedPerson { get; private set; }
 
-    public static PersonRelation Create(RelationType type, string relatedPersonPersonalNumber)
+    public static PersonRelationship Create(RelationType type, string relatedPersonPersonalNumber)
     {
-        return new PersonRelation
+        return new PersonRelationship
         {
             Type = type,
             RelatedPersonPersonalNumber = relatedPersonPersonalNumber,
