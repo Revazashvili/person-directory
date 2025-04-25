@@ -41,4 +41,13 @@ public class PersonController : ControllerBase
 
         return Ok();
     }
+    
+    [HttpPatch("{PersonalNumber}/image/{ImageUrl}")]
+    [ValidationActionFilter<PersonImageChangeDto>]
+    public async Task<IActionResult> ChangeImage([FromRoute] PersonImageChangeDto personImageChangeDto, CancellationToken cancellationToken)
+    {
+        await _personService.ChangeImageAsync(personImageChangeDto, cancellationToken);
+
+        return Ok();
+    }
 }

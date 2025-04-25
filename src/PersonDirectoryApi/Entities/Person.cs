@@ -49,4 +49,9 @@ public class Person
         CityId = cityId;
         PhoneNumbers = phoneNumbers;
     }
+    
+    public void UpdateImage(string imageUrl)
+    {
+        ImageUrl = imageUrl;
+    }
 }

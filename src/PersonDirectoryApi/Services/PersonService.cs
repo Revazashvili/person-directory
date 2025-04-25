@@ -9,15 +9,18 @@ public interface IPersonService
     Task CreateAsync(PersonCreateDto createDto, CancellationToken cancellationToken);
     Task UpdateAsync(PersonUpdateDto updateDto, CancellationToken cancellationToken);
     Task DeleteAsync(PersonDeleteDto deleteDto, CancellationToken cancellationToken);
+    Task ChangeImageAsync(PersonImageChangeDto imageChangeDto, CancellationToken cancellationToken);
 }
 
 internal class PersonService : IPersonService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IMultimediaService _multimediaService;
 
-    public PersonService(IUnitOfWork unitOfWork)
+    public PersonService(IUnitOfWork unitOfWork, IMultimediaService multimediaService)
     {
         _unitOfWork = unitOfWork;
+        _multimediaService = multimediaService;
     }
     
     public async Task CreateAsync(PersonCreateDto createDto, CancellationToken cancellationToken)
@@ -50,6 +53,29 @@ internal class PersonService : IPersonService
         var person = await _unitOfWork.Persons.GetAsync(person => person.PersonalNumber == deleteDto.PersonalNumber, cancellationToken);
         
         _unitOfWork.Persons.Remove(person);
+        
+        await _unitOfWork.CompleteAsync(cancellationToken);
+    }
+    
+    public async Task ChangeImageAsync(PersonImageChangeDto imageChangeDto, CancellationToken cancellationToken)
+    {
+        var person = await _unitOfWork.Persons.GetAsync(person => person.PersonalNumber == imageChangeDto.PersonalNumber, cancellationToken);
+
+        if (!string.IsNullOrEmpty(imageChangeDto.ImageUrl))
+        {
+            try
+            {
+                await _multimediaService.RemoveAsync(person.ImageUrl);
+            }
+            catch
+            {
+                // ignore error, we still can remove images that are not referenced using background service
+            }
+        }
+        
+        person.UpdateImage(imageChangeDto.ImageUrl);
+        
+        _unitOfWork.Persons.Update(person);
         
         await _unitOfWork.CompleteAsync(cancellationToken);
     }
