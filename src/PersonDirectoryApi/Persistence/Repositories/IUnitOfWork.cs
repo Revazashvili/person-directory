@@ -18,7 +18,7 @@ public class UnitOfWork : IUnitOfWork
     public UnitOfWork(PersonContext context)
     {
         _context = context;
-        Persons = new Repository<Person>(context);
+        Persons = new PersonRepository(context);
         Cities = new Repository<City>(context);
         PhoneNumbers = new Repository<PhoneNumber>(context);
         PersonRelations = new Repository<PersonRelationship>(context);

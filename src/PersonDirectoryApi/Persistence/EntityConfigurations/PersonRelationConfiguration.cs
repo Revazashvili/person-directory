@@ -27,12 +27,12 @@ public class PersonRelationConfiguration : IEntityTypeConfiguration<PersonRelati
         builder.HasOne(r => r.Person)
             .WithMany(p => p.Relationships)
             .HasForeignKey(r => r.PersonPersonalNumber)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
                 
         builder.HasOne(r => r.RelatedPerson)
             .WithMany()
             .HasForeignKey(r => r.RelatedPersonPersonalNumber)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(r => new { r.PersonPersonalNumber, r.RelatedPersonPersonalNumber, r.Type })
             .IsUnique();

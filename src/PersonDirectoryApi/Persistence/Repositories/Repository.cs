@@ -1,7 +1,27 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using PersonDirectoryApi.Entities;
 
 namespace PersonDirectoryApi.Persistence.Repositories;
+
+public class PersonRepository : Repository<Person>, IRepository<Person>
+{
+    private readonly PersonContext _context;
+
+    public PersonRepository(PersonContext context) : base(context)
+    {
+        _context = context;
+    }
+
+    public new Task<Person?> GetAsync(Expression<Func<Person, bool>> predicate, CancellationToken cancellationToken)
+    {
+        return _context.Persons
+            .Include(person => person.PhoneNumbers)
+            .Include(person => person.Relationships)
+            .ThenInclude(x => x.RelatedPerson)
+            .FirstOrDefaultAsync(predicate, cancellationToken);
+    }
+}
 
 public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 {

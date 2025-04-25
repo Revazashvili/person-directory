@@ -1,7 +1,9 @@
 using System.Globalization;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace PersonDirectoryApi;
 
@@ -22,15 +24,24 @@ public class ValidationActionFilter<T> : ActionFilterAttribute where T : class
 
         if (!validationResult.IsValid)
         {
-            var errors = validationResult.Errors.Select(x => new
-            {
-                x.PropertyName,
-                x.ErrorMessage
-            }).ToList();
-            context.Result = new BadRequestObjectResult(errors);
+            context.Result = new ValidationResultObject(validationResult);
             return;
         }
         
         await base.OnActionExecutionAsync(context, next);
+    }
+}
+
+public class ValidationResultObject : BadRequestObjectResult
+{
+    public ValidationResultObject(ValidationResult validationResult) : base(validationResult.Errors
+        .Select(x => new
+        {
+            x.PropertyName,
+            x.ErrorMessage
+        })
+        .ToList()
+    )
+    {
     }
 }

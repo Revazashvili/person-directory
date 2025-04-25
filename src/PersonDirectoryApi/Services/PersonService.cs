@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PersonDirectoryApi.Dtos;
 using PersonDirectoryApi.Entities;
 using PersonDirectoryApi.Persistence.Repositories;
@@ -10,17 +11,21 @@ public interface IPersonService
     Task UpdateAsync(PersonUpdateDto updateDto, CancellationToken cancellationToken);
     Task DeleteAsync(PersonDeleteDto deleteDto, CancellationToken cancellationToken);
     Task ChangeImageAsync(PersonImageChangeDto imageChangeDto, CancellationToken cancellationToken);
+    Task CreateRelationship(RelationshipCreateDto relationshipCreateDto, CancellationToken cancellationToken);
+    Task RemoveRelationship(RelationshipRemoveDto relationshipRemoveDto, CancellationToken cancellationToken);
 }
 
 internal class PersonService : IPersonService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMultimediaService _multimediaService;
+    private readonly PersonContext _personContext;
 
-    public PersonService(IUnitOfWork unitOfWork, IMultimediaService multimediaService)
+    public PersonService(IUnitOfWork unitOfWork, IMultimediaService multimediaService, PersonContext personContext)
     {
         _unitOfWork = unitOfWork;
         _multimediaService = multimediaService;
+        _personContext = personContext;
     }
     
     public async Task CreateAsync(PersonCreateDto createDto, CancellationToken cancellationToken)
@@ -80,6 +85,30 @@ internal class PersonService : IPersonService
         
         _unitOfWork.Persons.Update(person);
         
+        await _unitOfWork.CompleteAsync(cancellationToken);
+    }
+    
+    public async Task CreateRelationship(RelationshipCreateDto relationshipCreateDto, CancellationToken cancellationToken)
+    {
+        var person = await _unitOfWork.Persons.GetAsync(person => person.PersonalNumber == relationshipCreateDto.PersonalNumber, cancellationToken);
+
+        var relationship = PersonRelationship.Create(relationshipCreateDto.RelatedPerson.Type,
+            relationshipCreateDto.RelatedPerson.RelatedPersonPersonalNumber);
+        
+        person.AddRelationship(relationship);
+        
+        _unitOfWork.Persons.Update(person);
+        
+        await _unitOfWork.CompleteAsync(cancellationToken);
+    }
+    
+    public async Task RemoveRelationship(RelationshipRemoveDto relationshipRemoveDto, CancellationToken cancellationToken)
+    {
+        var person = await _unitOfWork.Persons.GetAsync(person => person.PersonalNumber == relationshipRemoveDto.PersonalNumber, cancellationToken);
+        
+        person.RemoveRelationship(relationshipRemoveDto.RelatedPersonPersonalNumber);
+        
+        _unitOfWork.Persons.Update(person);
         await _unitOfWork.CompleteAsync(cancellationToken);
     }
 }

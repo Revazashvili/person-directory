@@ -51,4 +51,16 @@ public class Person
     {
         ImageUrl = imageUrl;
     }
+
+    public void AddRelationship(PersonRelationship personRelationship)
+    {
+        Relationships.Add(personRelationship);
+    }
+    
+    public void RemoveRelationship(string relatedPersonPersonalNumber)
+    {
+        var relationship = Relationships.First(personRelationship => personRelationship.RelatedPersonPersonalNumber == relatedPersonPersonalNumber);
+        
+        Relationships.Remove(relationship);
+    }
 }

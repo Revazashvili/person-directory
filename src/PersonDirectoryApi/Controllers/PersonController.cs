@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using PersonDirectoryApi.Dtos;
 using PersonDirectoryApi.Services;
@@ -49,5 +50,30 @@ public class PersonController : ControllerBase
         await _personService.ChangeImageAsync(personImageChangeDto, cancellationToken);
 
         return Ok();
+    }
+    
+    [HttpPost("{personalNumber}/relationship")]
+    public async Task<IActionResult> CreateRelationship([FromRoute] string personalNumber, [FromBody] RelatedPersonDto relatedPerson, 
+        CancellationToken cancellationToken, IValidator<RelationshipCreateDto> validator)
+    {
+        var relationshipCreateDto = new RelationshipCreateDto(personalNumber, relatedPerson);
+
+        var validationResult = await validator.ValidateAsync(relationshipCreateDto, cancellationToken);
+        
+        if (!validationResult.IsValid)
+            return new ValidationResultObject(validationResult);
+        
+        await _personService.CreateRelationship(relationshipCreateDto, cancellationToken);
+
+        return Created();
+    }
+    
+    [HttpDelete("{PersonalNumber}/relationship/{RelatedPersonPersonalNumber}")]
+    [ValidationActionFilter<RelationshipRemoveDto>]
+    public async Task<IActionResult> RemoveRelationship([FromRoute] RelationshipRemoveDto relationshipRemoveDto, CancellationToken cancellationToken)
+    {
+        await _personService.RemoveRelationship(relationshipRemoveDto, cancellationToken);
+
+        return Created();
     }
 }
