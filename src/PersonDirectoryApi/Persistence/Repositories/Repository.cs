@@ -21,7 +21,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         .Skip((pageNumber - 1) * pageSize)
         .ToListAsync(cancellationToken);
 
-    public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate) => _dbSet.AnyAsync(predicate);
+    public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken) => _dbSet.AnyAsync(predicate, cancellationToken);
 
     public async Task AddAsync(TEntity entity) => await _dbSet.AddAsync(entity);
 
