@@ -7,6 +7,7 @@ namespace PersonDirectoryApi.Services;
 
 public interface IPersonService
 {
+    Task<PersonDto?> GetAsync(string personalNumber, CancellationToken cancellationToken);
     Task CreateAsync(PersonCreateDto createDto, CancellationToken cancellationToken);
     Task UpdateAsync(PersonUpdateDto updateDto, CancellationToken cancellationToken);
     Task DeleteAsync(PersonDeleteDto deleteDto, CancellationToken cancellationToken);
@@ -19,15 +20,33 @@ internal class PersonService : IPersonService
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IMultimediaService _multimediaService;
-    private readonly PersonContext _personContext;
 
-    public PersonService(IUnitOfWork unitOfWork, IMultimediaService multimediaService, PersonContext personContext)
+    public PersonService(IUnitOfWork unitOfWork, IMultimediaService multimediaService)
     {
         _unitOfWork = unitOfWork;
         _multimediaService = multimediaService;
-        _personContext = personContext;
     }
-    
+
+    public async Task<PersonDto?> GetAsync(string personalNumber, CancellationToken cancellationToken)
+    {
+        var person = await _unitOfWork.Persons.GetAsync(p => p.PersonalNumber == personalNumber, cancellationToken);
+
+        if (person is null)
+            return null;
+        
+        var cityDto = new CityDto(person.City.Id, person.City.Name);
+        
+        var phoneNumbers = person.PhoneNumbers
+            .Select(dto => new PhoneNumberDto(dto.Type, dto.Number))
+            .ToList();
+        var relationships = person.Relationships
+            .Select(dto => new RelatedPersonDto(dto.Type, dto.RelatedPersonPersonalNumber))
+            .ToList();
+
+        return new PersonDto(person.FirstName, person.LastName, person.Gender, personalNumber, person.ImageUrl,
+            person.BirthDate, cityDto, phoneNumbers, relationships);
+    }
+
     public async Task CreateAsync(PersonCreateDto createDto, CancellationToken cancellationToken)
     {
         var phoneNumbers = createDto.PhoneNumbers.Select(dto => PhoneNumber.Create(dto.Type, dto.Number)).ToList();

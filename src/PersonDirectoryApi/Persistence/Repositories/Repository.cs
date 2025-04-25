@@ -16,6 +16,7 @@ public class PersonRepository : Repository<Person>, IRepository<Person>
     public new Task<Person?> GetAsync(Expression<Func<Person, bool>> predicate, CancellationToken cancellationToken)
     {
         return _context.Persons
+            .Include(person => person.City)
             .Include(person => person.PhoneNumbers)
             .Include(person => person.Relationships)
             .ThenInclude(x => x.RelatedPerson)

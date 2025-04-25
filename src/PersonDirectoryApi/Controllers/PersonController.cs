@@ -16,6 +16,18 @@ public class PersonController : ControllerBase
         _personService = personService;
     }
 
+    [HttpGet("{personalNumber}")]
+    [ProducesResponseType<PersonDto>(StatusCodes.Status200OK)]
+    public async Task<IActionResult> Get([FromRoute] string personalNumber, CancellationToken cancellationToken)
+    {
+        var dto = await _personService.GetAsync(personalNumber, cancellationToken);
+        
+        if (dto is null)
+            return NoContent();
+
+        return Ok(dto);
+    }
+    
     [HttpPost]
     [ValidationActionFilter<PersonCreateDto>]
     public async Task<IActionResult> Create([FromBody] PersonCreateDto personCreateDto, CancellationToken cancellationToken)
