@@ -3,8 +3,6 @@ using System.Reflection;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using PersonDirectoryApi;
-using PersonDirectoryApi.Dtos;
 using PersonDirectoryApi.Localization;
 using PersonDirectoryApi.Persistence.Repositories;
 using PersonDirectoryApi.Services;
@@ -15,6 +13,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddControllers();
 builder.Services.AddValidatorsFromAssemblies([Assembly.GetExecutingAssembly()]);
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -43,14 +42,23 @@ app.MapOpenApi();
 app.Use((context, next) =>
 {
     var language = context.Request.Headers.AcceptLanguage.ToString();
+    if (!string.IsNullOrEmpty(language))
+    {
+        var cultures = language.Split(',').Select(lang => lang.Split(';')[0]);
+        var firstCulture = cultures.FirstOrDefault();
+        if (!string.IsNullOrWhiteSpace(firstCulture))
+        {
+            var culture = new CultureInfo(firstCulture);
+            CultureInfo.CurrentCulture = culture;
+            CultureInfo.CurrentUICulture = culture;
+        }
+    }
 
-    var culture = CultureInfo.GetCultureInfo(language);
-    
-    CultureInfo.CurrentCulture = culture;
-    CultureInfo.CurrentUICulture = culture;
     return next();
 });
 
+app.UseSwagger();
+app.UseSwaggerUI();
 app.MapControllers();
 
 app.Run();

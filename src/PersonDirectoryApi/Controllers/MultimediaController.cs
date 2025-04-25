@@ -23,7 +23,7 @@ public class MultimediaController : ControllerBase
     }
     
     [HttpPost]
-    public async Task<IActionResult> Upload([FromForm] IFormFile file, CancellationToken cancellationToken)
+    public async Task<IActionResult> Upload(IFormFile file, CancellationToken cancellationToken)
     {
         var url = await _multimediaService.UploadAsync(file, cancellationToken);
 
