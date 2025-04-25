@@ -26,7 +26,7 @@ internal class PersonService : IPersonService
     public async Task CreateAsync(PersonCreateDto createDto, CancellationToken cancellationToken)
     {
         var phoneNumbers = createDto.PhoneNumbers.Select(dto => PhoneNumber.Create(dto.Type, dto.Number)).ToList();
-        var relations = createDto.RelatedPersons?.Select(dto => PersonRelation.Create(dto.Type, dto.RelatedPersonId)).ToList();
+        var relations = createDto.RelatedPersons?.Select(dto => PersonRelation.Create(dto.Type, dto.RelatedPersonPersonalNumber)).ToList();
         
         var person = Person.Create(createDto.FirstName, createDto.LastName,  createDto.PersonalNumber, createDto.Gender, createDto.BirthDate, createDto.CityId, createDto.ImageUrl, phoneNumbers, relations);
 

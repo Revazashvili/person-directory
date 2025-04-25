@@ -18,23 +18,23 @@ public class PersonRelationConfiguration : IEntityTypeConfiguration<PersonRelati
             .IsRequired()
             .HasConversion<string>();
                 
-        builder.Property(r => r.PersonId)
+        builder.Property(r => r.PersonPersonalNumber)
             .IsRequired();
                 
-        builder.Property(r => r.RelatedPersonId)
+        builder.Property(r => r.RelatedPersonPersonalNumber)
             .IsRequired();
                 
         builder.HasOne(r => r.Person)
             .WithMany(p => p.Relations)
-            .HasForeignKey(r => r.PersonId)
+            .HasForeignKey(r => r.PersonPersonalNumber)
             .OnDelete(DeleteBehavior.Restrict);
                 
         builder.HasOne(r => r.RelatedPerson)
             .WithMany()
-            .HasForeignKey(r => r.RelatedPersonId)
+            .HasForeignKey(r => r.RelatedPersonPersonalNumber)
             .OnDelete(DeleteBehavior.Restrict);
-                
-        builder.HasIndex(r => new { r.PersonId, r.RelatedPersonId, r.Type })
+
+        builder.HasIndex(r => new { r.PersonPersonalNumber, r.RelatedPersonPersonalNumber, r.Type })
             .IsUnique();
                 
         builder.ToTable("person_relations");

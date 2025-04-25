@@ -36,8 +36,8 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
             .WithMessage(localizer[LocalizedStringKeys.InvalidFormat])
             .MustAsync(async (dto, val, cancellationToken) =>
             {
-                var exists = await unitOfWork.Persons.ExistsAsync(person => person.PersonalNumber == dto.PersonalNumber,
-                    cancellationToken);
+                var exists = await unitOfWork.Persons
+                    .ExistsAsync(person => person.PersonalNumber == dto.PersonalNumber, cancellationToken);
                 return !exists;
             })
             .WithMessage(localizer[LocalizedStringKeys.PersonalNumberAlreadyExists]);
@@ -83,6 +83,6 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
             .WithMessage(localizer[LocalizedStringKeys.PhoneNumberAlreadyExists]);
 
         RuleForEach(x => x.RelatedPersons)
-            .SetValidator(new RelatedPersonDtoValidator(localizer));
+            .SetValidator(new RelatedPersonDtoValidator(localizer, unitOfWork));
     }
 }

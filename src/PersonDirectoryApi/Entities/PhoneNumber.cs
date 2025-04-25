@@ -8,7 +8,7 @@ public class PhoneNumber
     public PhoneNumberType Type { get; private set; }
     public string Number { get; private set; }
         
-    public int PersonId { get; private set; }
+    public string PersonPersonalNumber { get; private set; }
     public Person Person { get; private set; }
 
     public static PhoneNumber Create(PhoneNumberType phoneType, string number)

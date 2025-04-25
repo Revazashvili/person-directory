@@ -8,11 +8,11 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
 {
     public void Configure(EntityTypeBuilder<Person> builder)
     {
-        builder.HasKey(p => p.Id);
+        builder.HasKey(p => p.PersonalNumber);
         
-        builder.Property(p => p.Id)
-            .ValueGeneratedOnAdd()
-            .IsRequired();
+        builder.Property(p => p.PersonalNumber)
+            .IsRequired()
+            .HasMaxLength(11);
 
         builder.Property(p => p.FirstName)
             .IsRequired()
@@ -25,10 +25,6 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder.Property(p => p.Gender)
             .IsRequired()
             .HasConversion<string>();
-
-        builder.Property(p => p.PersonalNumber)
-            .IsRequired()
-            .HasMaxLength(11);
 
         builder.Property(p => p.BirthDate)
             .IsRequired()
@@ -45,9 +41,6 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
             .WithMany(c => c.Residents)
             .HasForeignKey(p => p.CityId)
             .OnDelete(DeleteBehavior.Restrict);
-
-        builder.HasIndex(p => p.PersonalNumber)
-            .IsUnique();
 
         builder.HasIndex(p => new { p.FirstName, p.LastName });
         builder.HasIndex(p => p.BirthDate);

@@ -22,12 +22,12 @@ public class PhoneNumberConfiguration : IEntityTypeConfiguration<PhoneNumber>
             .IsRequired()
             .HasMaxLength(50);
                 
-        builder.Property(p => p.PersonId)
+        builder.Property(p => p.PersonPersonalNumber)
             .IsRequired();
                 
         builder.HasOne(p => p.Person)
             .WithMany(p => p.PhoneNumbers)
-            .HasForeignKey(p => p.PersonId)
+            .HasForeignKey(p => p.PersonPersonalNumber)
             .OnDelete(DeleteBehavior.Cascade);
                 
         builder.ToTable("phone_numbers");

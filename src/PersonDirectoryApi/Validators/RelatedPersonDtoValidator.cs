@@ -1,21 +1,27 @@
 using FluentValidation;
 using PersonDirectoryApi.Dtos;
 using PersonDirectoryApi.Localization;
+using PersonDirectoryApi.Persistence.Repositories;
 
 namespace PersonDirectoryApi.Validators;
 
 public class RelatedPersonDtoValidator : AbstractValidator<RelatedPersonDto>
 {
-    public RelatedPersonDtoValidator(IStringLocalizer localizer)
+    public RelatedPersonDtoValidator(IStringLocalizer localizer, IUnitOfWork unitOfWork)
     {
         RuleFor(x => x.Type)
             .NotNull()
             .WithMessage(localizer[LocalizedStringKeys.FieldRequired]);
 
-        RuleFor(x => x.RelatedPersonId)
-            .NotNull()
+        RuleFor(x => x.RelatedPersonPersonalNumber)
+            .NotEmpty()
             .WithMessage(localizer[LocalizedStringKeys.FieldRequired])
-            .GreaterThan(0)
-            .WithMessage(localizer[LocalizedStringKeys.FieldGreaterThan0]);
+            .Matches("^[0-9]{11}$")
+            .WithMessage(localizer[LocalizedStringKeys.InvalidFormat])
+            .MustAsync((dto, val, cancellationToken) =>
+            {
+                return unitOfWork.Persons.ExistsAsync(person => person.PersonalNumber == dto.RelatedPersonPersonalNumber, cancellationToken);
+            })
+            .WithMessage(localizer[LocalizedStringKeys.PersonDoesNotExists]);
     }
 }
