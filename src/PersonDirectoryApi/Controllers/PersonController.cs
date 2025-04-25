@@ -23,4 +23,13 @@ public class PersonController : ControllerBase
 
         return Created();
     }
+    
+    [HttpPatch]
+    [ValidationActionFilter<PersonUpdateDto>]
+    public async Task<IActionResult> Update([FromBody] PersonUpdateDto personUpdateDto, CancellationToken cancellationToken)
+    {
+        await _personService.UpdateAsync(personUpdateDto, cancellationToken);
+
+        return Ok();
+    }
 }

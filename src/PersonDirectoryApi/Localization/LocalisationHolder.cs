@@ -12,6 +12,8 @@ public static class LocalisationHolder
         new() { Key = LocalizedStringKeys.AtLeast18YearsOldRestriction, Value = "მომხმარებელი უნდა იყოს მინიმუმ 18 წლის", Culture = "ka" },
         new() { Key = LocalizedStringKeys.CityDoesNotExists, Value = "City does not exists", Culture = "en" },
         new() { Key = LocalizedStringKeys.CityDoesNotExists, Value = "ქალაქი არ მოიძებნა", Culture = "ka" },
+        new() { Key = LocalizedStringKeys.PersonDoesNotExists, Value = "Person does not exists", Culture = "en" },
+        new() { Key = LocalizedStringKeys.PersonDoesNotExists, Value = "მომხმარებელი არ მოიძებნა", Culture = "ka" },
         new() { Key = LocalizedStringKeys.PersonalNumberAlreadyExists, Value = "Person with this personal number already exists", Culture = "en" },
         new() { Key = LocalizedStringKeys.PersonalNumberAlreadyExists, Value = "პირადი ნომრით ჩანაწერი უკვე არსებობს", Culture = "ka" },
         new() { Key = LocalizedStringKeys.PhoneNumberAlreadyExists, Value = "Person with this phone number already exists", Culture = "en" },

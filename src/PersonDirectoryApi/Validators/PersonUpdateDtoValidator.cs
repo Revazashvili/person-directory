@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using FluentValidation;
 using PersonDirectoryApi.Dtos;
 using PersonDirectoryApi.Localization;
@@ -5,9 +6,9 @@ using PersonDirectoryApi.Persistence.Repositories;
 
 namespace PersonDirectoryApi.Validators;
 
-public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
+public class PersonUpdateDtoValidator : AbstractValidator<PersonUpdateDto>
 {
-    public PersonCreateDtoValidator(IStringLocalizer localizer, IUnitOfWork unitOfWork)
+    public PersonUpdateDtoValidator(IStringLocalizer localizer, IUnitOfWork unitOfWork)
     {
         RuleFor(x => x.FirstName)
             .NotEmpty()
@@ -34,24 +35,17 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
             .WithMessage(localizer[LocalizedStringKeys.FieldRequired])
             .Matches("^[0-9]{11}$")
             .WithMessage(localizer[LocalizedStringKeys.InvalidFormat])
-            .MustAsync(async (dto, val, cancellationToken) =>
+            .MustAsync((dto, val, cancellationToken) =>
             {
-                var exists = await unitOfWork.Persons.ExistsAsync(person => person.PersonalNumber == dto.PersonalNumber,
-                    cancellationToken);
-                return !exists;
+                return unitOfWork.Persons.ExistsAsync(person => person.PersonalNumber == dto.PersonalNumber, cancellationToken);
             })
-            .WithMessage(localizer[LocalizedStringKeys.PersonalNumberAlreadyExists]);
-
-        RuleFor(x => x.ImageUrl)
-            .NotEmpty()
-            .WithMessage(localizer[LocalizedStringKeys.FieldRequired]);
-
+            .WithMessage(localizer[LocalizedStringKeys.PersonDoesNotExists]);
+        
         RuleFor(x => x.BirthDate)
             .NotEmpty()
             .WithMessage(localizer[LocalizedStringKeys.FieldRequired])
             .Must(PersonCommonValidator.AgeValidator)
-            .WithMessage(localizer[LocalizedStringKeys.AtLeast18YearsOldRestriction]);
-        ;
+            .WithMessage(localizer[LocalizedStringKeys.AtLeast18YearsOldRestriction]);;
 
         RuleFor(x => x.CityId)
             .GreaterThan(0)
@@ -65,7 +59,7 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
         RuleFor(x => x.PhoneNumbers)
             .NotEmpty()
             .WithMessage(localizer[LocalizedStringKeys.FieldRequired]);
-
+        
         RuleForEach(x => x.PhoneNumbers)
             .SetValidator(new PhoneNumberDtoValidator(localizer))
             .MustAsync(async (dto, val, cancellationToken) =>
@@ -77,12 +71,9 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
                                                && person.PhoneNumbers.Any(phone => phone.Number == phoneNumber.Number),
                             cancellationToken);
                 }
-
+                
                 return true;
             })
             .WithMessage(localizer[LocalizedStringKeys.PhoneNumberAlreadyExists]);
-
-        RuleForEach(x => x.RelatedPersons)
-            .SetValidator(new RelatedPersonDtoValidator(localizer));
     }
 }

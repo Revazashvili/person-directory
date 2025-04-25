@@ -16,6 +16,9 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
     public async Task<TEntity?> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
 
+    public Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken) =>
+        _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
+
     public Task<List<TEntity>> GetAsync(int pageNumber, int pageSize, CancellationToken cancellationToken) => _dbSet
         .Take(pageSize)
         .Skip((pageNumber - 1) * pageSize)

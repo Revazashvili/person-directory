@@ -1,3 +1,4 @@
+using PersonDirectoryApi.Dtos;
 using PersonDirectoryApi.Enums;
 
 namespace PersonDirectoryApi.Entities;
@@ -21,7 +22,7 @@ public class Person
     public ICollection<PhoneNumber> PhoneNumbers { get; private set; } = new List<PhoneNumber>();
     public ICollection<PersonRelation> Relations { get; private set; } = new List<PersonRelation>();
 
-    public static Person Create(string firstName, string lastName, string personalNumber, Gender gender, int cityId, string imageUrl, 
+    public static Person Create(string firstName, string lastName, string personalNumber, Gender gender, DateTime birthDate, int cityId, string imageUrl, 
         List<PhoneNumber> phoneNumbers, List<PersonRelation> relations)
     {
         return new Person
@@ -33,7 +34,19 @@ public class Person
             CityId = cityId,
             ImageUrl = imageUrl,
             PhoneNumbers = phoneNumbers,
-            Relations = relations
+            Relations = relations,
+            BirthDate = birthDate
         };
+    }
+
+    public void Update(string firstName, string lastname, string personalNumber, Gender gender, DateTime birthDate, int cityId, List<PhoneNumber> phoneNumbers)
+    {
+        FirstName = firstName;
+        LastName = lastname;
+        Gender = gender;
+        BirthDate = birthDate;
+        PersonalNumber = personalNumber;
+        CityId = cityId;
+        PhoneNumbers = phoneNumbers;
     }
 }
