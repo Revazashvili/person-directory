@@ -37,8 +37,8 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder.Property(p => p.CityId)
             .IsRequired();
 
-        builder.Property(p => p.PhotoPath)
-            .IsRequired(false)
+        builder.Property(p => p.ImageUrl)
+            .IsRequired()
             .HasMaxLength(255);
 
         builder.HasOne(p => p.City)

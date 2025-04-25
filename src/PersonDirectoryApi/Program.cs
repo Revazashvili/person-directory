@@ -24,6 +24,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<IStringLocalizer, StringLocalizer>();
 builder.Services.AddSingleton<IMultimediaService, MultimediaService>();
 builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<IPersonService, PersonService>();
 
 var connectionString = builder.Configuration.GetConnectionString(nameof(PersonContext));
 builder.Services.AddDbContext<PersonContext>(builder =>

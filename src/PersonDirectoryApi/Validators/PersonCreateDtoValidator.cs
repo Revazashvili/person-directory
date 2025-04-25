@@ -43,6 +43,10 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
             })
             .WithMessage(localizer[LocalizedStringKeys.PersonalNumberAlreadyExists]);
 
+        RuleFor(x => x.ImageUrl)
+            .NotEmpty()
+            .WithMessage(localizer[LocalizedStringKeys.FieldRequired]);
+        
         RuleFor(x => x.BirthDate)
             .NotEmpty()
             .WithMessage(localizer[LocalizedStringKeys.FieldRequired])
@@ -58,6 +62,10 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
             })
             .WithMessage(localizer[LocalizedStringKeys.CityDoesNotExists]);
 
+        RuleFor(x => x.PhoneNumbers)
+            .NotEmpty()
+            .WithMessage(localizer[LocalizedStringKeys.FieldRequired]);
+        
         RuleForEach(x => x.PhoneNumbers)
             .SetValidator(new PhoneNumberDtoValidator(localizer))
             .MustAsync(async (dto, val, cancellationToken) =>
