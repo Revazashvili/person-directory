@@ -8,6 +8,7 @@ public interface IPersonService
 {
     Task CreateAsync(PersonCreateDto createDto, CancellationToken cancellationToken);
     Task UpdateAsync(PersonUpdateDto updateDto, CancellationToken cancellationToken);
+    Task DeleteAsync(PersonDeleteDto deleteDto, CancellationToken cancellationToken);
 }
 
 internal class PersonService : IPersonService
@@ -40,6 +41,15 @@ internal class PersonService : IPersonService
             updateDto.BirthDate, updateDto.CityId, phoneNumbers);
         
         _unitOfWork.Persons.Update(person);
+        
+        await _unitOfWork.CompleteAsync(cancellationToken);
+    }
+    
+    public async Task DeleteAsync(PersonDeleteDto deleteDto, CancellationToken cancellationToken)
+    {
+        var person = await _unitOfWork.Persons.GetAsync(person => person.PersonalNumber == deleteDto.PersonalNumber, cancellationToken);
+        
+        _unitOfWork.Persons.Remove(person);
         
         await _unitOfWork.CompleteAsync(cancellationToken);
     }

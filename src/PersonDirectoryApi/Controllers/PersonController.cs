@@ -32,4 +32,13 @@ public class PersonController : ControllerBase
 
         return Ok();
     }
+    
+    [HttpDelete]
+    [ValidationActionFilter<PersonDeleteDto>]
+    public async Task<IActionResult> Delete([FromQuery] PersonDeleteDto personDeleteDto, CancellationToken cancellationToken)
+    {
+        await _personService.DeleteAsync(personDeleteDto, cancellationToken);
+
+        return Ok();
+    }
 }
