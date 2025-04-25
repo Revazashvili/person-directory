@@ -20,8 +20,10 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
     options.SuppressModelStateInvalidFilter = true;
 });
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton<IStringLocalizer, StringLocalizer>();
 builder.Services.AddSingleton<IMultimediaService, MultimediaService>();
+builder.Services.AddScoped<ICityService, CityService>();
 
 var connectionString = builder.Configuration.GetConnectionString(nameof(PersonContext));
 builder.Services.AddDbContext<PersonContext>(builder =>

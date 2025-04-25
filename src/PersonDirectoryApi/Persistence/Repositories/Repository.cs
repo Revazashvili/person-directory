@@ -16,7 +16,10 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
     public async Task<TEntity?> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
 
-    public Task<List<TEntity>> GetAllAsync() => _dbSet.ToListAsync();
+    public Task<List<TEntity>> GetAsync(int pageNumber, int pageSize, CancellationToken cancellationToken) => _dbSet
+        .Take(pageSize)
+        .Skip((pageNumber - 1) * pageSize)
+        .ToListAsync(cancellationToken);
 
     public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate) => _dbSet.AnyAsync(predicate);
 
