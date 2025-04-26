@@ -9,6 +9,7 @@ public static class LocalizedStringKeys
     public const string PersonDoesNotExists = "person_does_not_exists";
     public const string PersonalNumberAlreadyExists = "personal_number_already_exists";
     public const string PhoneNumberAlreadyExists = "phone_number_already_exists";
+    public const string RelationshipAlreadyExists = "relationship_already_exists";
     public const string NameLenghtBetween2And50 = "name_lenght_between_2_and_50";
     public const string InvalidFormat = "invalid_format";
 }

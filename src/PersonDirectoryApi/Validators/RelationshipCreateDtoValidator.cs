@@ -21,6 +21,15 @@ public class RelationshipCreateDtoValidator : AbstractValidator<RelationshipCrea
             .WithMessage(localizer[LocalizedStringKeys.PersonDoesNotExists]);
         
         RuleFor(x => x.RelatedPerson)
-            .SetValidator(new RelatedPersonDtoValidator(localizer, unitOfWork));
+            .SetValidator(new RelatedPersonDtoValidator(localizer, unitOfWork))
+            .MustAsync(async (dto, val, cancellationToken) =>
+            {
+                var relationshipAlreadyExists = await unitOfWork.PersonRelations.ExistsAsync(
+                    person => person.PersonPersonalNumber == dto.PersonalNumber &&
+                              person.RelatedPersonPersonalNumber == dto.RelatedPerson.RelatedPersonPersonalNumber,
+                    cancellationToken);
+                return !relationshipAlreadyExists;
+            })
+            .WithMessage(localizer[LocalizedStringKeys.RelationshipAlreadyExists]);
     }
 }

@@ -21,6 +21,8 @@ public static class LocalisationHolder
         new() { Key = LocalizedStringKeys.NameLenghtBetween2And50, Value = "Length should be between 2 and 50", Culture = "en" },
         new() { Key = LocalizedStringKeys.NameLenghtBetween2And50, Value = "სიმბოლოების რამდენობა უნდა იყოს 2-სა ანდ 50-ს შორის", Culture = "ka" },
         new() { Key = LocalizedStringKeys.InvalidFormat, Value = "Format is invalid", Culture = "en" },
-        new() { Key = LocalizedStringKeys.InvalidFormat, Value = "ფორმატი არავალიდურია", Culture = "ka" }
+        new() { Key = LocalizedStringKeys.InvalidFormat, Value = "ფორმატი არავალიდურია", Culture = "ka" },
+        new() { Key = LocalizedStringKeys.RelationshipAlreadyExists, Value = "Relationship already exists", Culture = "en" },
+        new() { Key = LocalizedStringKeys.RelationshipAlreadyExists, Value = "კავშირი უკვე არსებობს", Culture = "ka" }
     ];
 }
