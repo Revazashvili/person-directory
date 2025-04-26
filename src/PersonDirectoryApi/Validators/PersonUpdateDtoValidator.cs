@@ -34,10 +34,7 @@ public class PersonUpdateDtoValidator : AbstractValidator<PersonUpdateDto>
             .WithMessage(localizer[LocalizedStringKeys.FieldRequired])
             .Matches("^[0-9]{11}$")
             .WithMessage(localizer[LocalizedStringKeys.InvalidFormat])
-            .MustAsync((dto, val, cancellationToken) =>
-            {
-                return unitOfWork.Persons.ExistsAsync(person => person.PersonalNumber == dto.PersonalNumber, cancellationToken);
-            })
+            .MustAsync((dto, val, cancellationToken) => unitOfWork.Persons.ExistsWithPersonalNumberAsync(dto.PersonalNumber, cancellationToken))
             .WithMessage(localizer[LocalizedStringKeys.PersonDoesNotExists]);
         
         RuleFor(x => x.BirthDate)
@@ -49,10 +46,7 @@ public class PersonUpdateDtoValidator : AbstractValidator<PersonUpdateDto>
         RuleFor(x => x.CityId)
             .GreaterThan(0)
             .WithMessage(localizer[LocalizedStringKeys.FieldGreaterThan0])
-            .MustAsync((dto, val, cancellationToken) =>
-            {
-                return unitOfWork.Cities.ExistsAsync(city => city.Id == dto.CityId, cancellationToken);
-            })
+            .MustAsync((dto, val, cancellationToken) => unitOfWork.Cities.ExistsAsync(dto.CityId, cancellationToken))
             .WithMessage(localizer[LocalizedStringKeys.CityDoesNotExists]);
 
         RuleFor(x => x.PhoneNumbers)
@@ -65,10 +59,10 @@ public class PersonUpdateDtoValidator : AbstractValidator<PersonUpdateDto>
             {
                 foreach (var phoneNumber in dto.PhoneNumbers)
                 {
-                    var exists = await unitOfWork.Persons
-                        .ExistsAsync(person => person.PersonalNumber != dto.PersonalNumber
-                                               && person.PhoneNumbers.Any(phone => phone.Number == phoneNumber.Number),
-                            cancellationToken);
+                    var exists = await unitOfWork.PhoneNumbers.NotBelongsToPersonAsync(dto.PersonalNumber, phoneNumber.Number, cancellationToken);
+                    
+                    if (exists)
+                        return false;
                 }
                 
                 return true;

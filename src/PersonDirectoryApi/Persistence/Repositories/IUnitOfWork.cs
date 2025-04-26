@@ -1,13 +1,11 @@
-using PersonDirectoryApi.Entities;
-
 namespace PersonDirectoryApi.Persistence.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {
     IPersonRepository Persons { get; }
-    IRepository<City> Cities { get; }
-    IRepository<PhoneNumber> PhoneNumbers { get; }
-    IRepository<PersonRelationship> PersonRelations { get; }
+    ICityRepository Cities { get; }
+    IPhoneNumberRepository PhoneNumbers { get; }
+    IPersonRelationshipRepository PersonRelations { get; }
     Task<int> CompleteAsync(CancellationToken cancellationToken);
 }
 
@@ -19,15 +17,15 @@ public class UnitOfWork : IUnitOfWork
     {
         _context = context;
         Persons = new PersonRepository(context);
-        Cities = new Repository<City>(context);
-        PhoneNumbers = new Repository<PhoneNumber>(context);
-        PersonRelations = new Repository<PersonRelationship>(context);
+        Cities = new CityRepository(context);
+        PhoneNumbers = new PhoneNumberRepository(context);
+        PersonRelations = new PersonRelationshipRepository(context);
     }
     
     public IPersonRepository Persons { get; }
-    public IRepository<City> Cities { get; }
-    public IRepository<PhoneNumber> PhoneNumbers { get; }
-    public IRepository<PersonRelationship> PersonRelations { get; }
+    public ICityRepository Cities { get; }
+    public IPhoneNumberRepository PhoneNumbers { get; }
+    public IPersonRelationshipRepository PersonRelations { get; }
     public Task<int> CompleteAsync(CancellationToken cancellationToken) => _context.SaveChangesAsync(cancellationToken);
     public void Dispose() => _context.Dispose();
 }

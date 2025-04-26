@@ -18,10 +18,7 @@ public class RelatedPersonDtoValidator : AbstractValidator<RelatedPersonDto>
             .WithMessage(localizer[LocalizedStringKeys.FieldRequired])
             .Matches("^[0-9]{11}$")
             .WithMessage(localizer[LocalizedStringKeys.InvalidFormat])
-            .MustAsync((dto, val, cancellationToken) =>
-            {
-                return unitOfWork.Persons.ExistsAsync(person => person.PersonalNumber == dto.RelatedPersonPersonalNumber, cancellationToken);
-            })
+            .MustAsync((dto, _, cancellationToken) => unitOfWork.Persons.ExistsWithPersonalNumberAsync(dto.RelatedPersonPersonalNumber, cancellationToken))
             .WithMessage(localizer[LocalizedStringKeys.PersonDoesNotExists]);
     }
 }

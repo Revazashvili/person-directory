@@ -19,7 +19,7 @@ public class CityService : ICityService
 
     public async Task<List<CityDto>> GetAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
     {
-        var cities = await _unitOfWork.Cities.GetAsync(pageNumber, pageSize, cancellationToken);
+        var cities = await _unitOfWork.Cities.GetAllAsync(pageNumber, pageSize, cancellationToken);
         
         return cities.Select(city => new CityDto(city.Id, city.Name)).ToList();
     }

@@ -36,8 +36,7 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
             .WithMessage(localizer[LocalizedStringKeys.InvalidFormat])
             .MustAsync(async (dto, val, cancellationToken) =>
             {
-                var exists = await unitOfWork.Persons
-                    .ExistsAsync(person => person.PersonalNumber == dto.PersonalNumber, cancellationToken);
+                var exists = await unitOfWork.Persons.ExistsWithPersonalNumberAsync(dto.PersonalNumber, cancellationToken);
                 return !exists;
             })
             .WithMessage(localizer[LocalizedStringKeys.PersonalNumberAlreadyExists]);
@@ -56,10 +55,7 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
         RuleFor(x => x.CityId)
             .GreaterThan(0)
             .WithMessage(localizer[LocalizedStringKeys.FieldGreaterThan0])
-            .MustAsync((dto, val, cancellationToken) =>
-            {
-                return unitOfWork.Cities.ExistsAsync(city => city.Id == dto.CityId, cancellationToken);
-            })
+            .MustAsync((dto, val, cancellationToken) => unitOfWork.Cities.ExistsAsync(dto.CityId, cancellationToken))
             .WithMessage(localizer[LocalizedStringKeys.CityDoesNotExists]);
 
         RuleFor(x => x.PhoneNumbers)
@@ -72,10 +68,10 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
             {
                 foreach (var phoneNumber in dto.PhoneNumbers)
                 {
-                    var exists = await unitOfWork.Persons
-                        .ExistsAsync(person => person.PersonalNumber != dto.PersonalNumber
-                                               && person.PhoneNumbers.Any(phone => phone.Number == phoneNumber.Number),
-                            cancellationToken);
+                    var exists = await unitOfWork.PhoneNumbers.NotBelongsToPersonAsync(dto.PersonalNumber, phoneNumber.Number, cancellationToken);
+                    
+                    if (exists)
+                        return false;
                 }
 
                 return true;

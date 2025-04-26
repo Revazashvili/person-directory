@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using PersonDirectoryApi.Dtos;
 using PersonDirectoryApi.Entities;
@@ -9,6 +8,7 @@ public interface IPersonRepository : IRepository<Person>
 {
     Task<Person?> GetByPersonalNumberAsync(string personalNumber, CancellationToken cancellationToken);
     Task<List<Person>> GetAllAsync(PersonSearchDto personSearchDto, CancellationToken cancellationToken);
+    Task<bool> ExistsWithPersonalNumberAsync(string personalNumber, CancellationToken cancellationToken);
 }
 
 public class PersonRepository : Repository<Person>, IPersonRepository
@@ -62,29 +62,7 @@ public class PersonRepository : Repository<Person>, IPersonRepository
             .Skip((personSearchDto.PageNumber - 1) * personSearchDto.PageSize)
             .ToListAsync(cancellationToken);
     }
-}
 
-public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
-{
-    private readonly PersonContext _context;
-    private readonly DbSet<TEntity> _dbSet;
-
-    public Repository(PersonContext context)
-    {
-        _context = context;
-        _dbSet = context.Set<TEntity>();
-    }
-
-    public Task<List<TEntity>> GetAsync(int pageNumber, int pageSize, CancellationToken cancellationToken) => _dbSet
-        .Take(pageSize)
-        .Skip((pageNumber - 1) * pageSize)
-        .ToListAsync(cancellationToken);
-
-    public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken) => _dbSet.AnyAsync(predicate, cancellationToken);
-
-    public async Task AddAsync(TEntity entity, CancellationToken cancellationToken) => await _dbSet.AddAsync(entity, cancellationToken);
-
-    public void Update(TEntity entity) => _context.Update(entity);
-
-    public void Remove(TEntity entity) => _dbSet.Remove(entity);
+    public Task<bool> ExistsWithPersonalNumberAsync(string personalNumber, CancellationToken cancellationToken) => 
+        _context.Persons.AnyAsync(person => person.PersonalNumber == personalNumber, cancellationToken);
 }

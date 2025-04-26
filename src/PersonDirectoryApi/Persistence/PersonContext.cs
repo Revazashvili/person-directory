@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using PersonDirectoryApi.Entities;
 
-namespace PersonDirectoryApi.Persistence.Repositories;
+namespace PersonDirectoryApi.Persistence;
 
 public class PersonContext : DbContext
 {
@@ -13,7 +13,7 @@ public class PersonContext : DbContext
     public DbSet<Person> Persons { get; set; }
     public DbSet<City> Cities { get; set; }
     public DbSet<PhoneNumber> PhoneNumbers { get; set; }
-    public DbSet<PersonRelationship> PersonRelation { get; set; }
+    public DbSet<PersonRelationship> Relationships { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

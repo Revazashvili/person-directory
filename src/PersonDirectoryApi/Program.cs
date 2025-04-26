@@ -4,6 +4,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PersonDirectoryApi.Localization;
+using PersonDirectoryApi.Persistence;
 using PersonDirectoryApi.Persistence.Repositories;
 using PersonDirectoryApi.Services;
 
