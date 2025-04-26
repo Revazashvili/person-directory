@@ -2,7 +2,6 @@ using FluentValidation;
 using PersonDirectoryApi.Enums;
 using PersonDirectoryApi.Localization;
 using PersonDirectoryApi.Persistence.Repositories;
-using PersonDirectoryApi.Validators;
 
 namespace PersonDirectoryApi.Dtos;
 

@@ -16,9 +16,10 @@ public class CityController : ControllerBase
     }
     
     [HttpGet]
-    public async Task<ActionResult<List<CityDto>>> GetCities([FromQuery] int pageNumber, [FromQuery] int pageSize, CancellationToken cancellationToken)
+    [ValidationActionFilter<CitySearchDto>]
+    public async Task<ActionResult<List<CityDto>>> GetCities([FromQuery] CitySearchDto citySearchDto, CancellationToken cancellationToken)
     {
-        var cities = await _cityService.GetAsync(pageNumber, pageSize, cancellationToken);
+        var cities = await _cityService.GetAsync(citySearchDto, cancellationToken);
         
         if (cities.Count == 0) 
             return NoContent();

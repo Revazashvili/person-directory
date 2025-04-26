@@ -5,7 +5,7 @@ namespace PersonDirectoryApi.Services;
 
 public interface ICityService
 {
-    Task<List<CityDto>> GetAsync(int pageNumber, int pageSize, CancellationToken cancellationToken);
+    Task<List<CityDto>> GetAsync(CitySearchDto citySearchDto, CancellationToken cancellationToken);
 }
 
 public class CityService : ICityService
@@ -17,9 +17,9 @@ public class CityService : ICityService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<List<CityDto>> GetAsync(int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<List<CityDto>> GetAsync(CitySearchDto citySearchDto, CancellationToken cancellationToken)
     {
-        var cities = await _unitOfWork.Cities.GetAllAsync(pageNumber, pageSize, cancellationToken);
+        var cities = await _unitOfWork.Cities.GetAllAsync(citySearchDto.PageNumber, citySearchDto.PageSize, cancellationToken);
         
         return cities.Select(city => new CityDto(city.Id, city.Name)).ToList();
     }

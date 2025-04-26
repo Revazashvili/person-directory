@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace PersonDirectoryApi.Validators;
+namespace PersonDirectoryApi;
 
 internal static class PersonCommonValidator
 {
