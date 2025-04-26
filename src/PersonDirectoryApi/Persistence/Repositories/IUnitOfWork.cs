@@ -4,7 +4,7 @@ namespace PersonDirectoryApi.Persistence.Repositories;
 
 public interface IUnitOfWork : IDisposable
 {
-    IRepository<Person> Persons { get; }
+    IPersonRepository Persons { get; }
     IRepository<City> Cities { get; }
     IRepository<PhoneNumber> PhoneNumbers { get; }
     IRepository<PersonRelationship> PersonRelations { get; }
@@ -24,7 +24,7 @@ public class UnitOfWork : IUnitOfWork
         PersonRelations = new Repository<PersonRelationship>(context);
     }
     
-    public IRepository<Person> Persons { get; }
+    public IPersonRepository Persons { get; }
     public IRepository<City> Cities { get; }
     public IRepository<PhoneNumber> PhoneNumbers { get; }
     public IRepository<PersonRelationship> PersonRelations { get; }

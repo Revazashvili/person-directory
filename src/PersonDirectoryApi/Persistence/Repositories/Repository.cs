@@ -1,10 +1,17 @@
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using PersonDirectoryApi.Dtos;
 using PersonDirectoryApi.Entities;
 
 namespace PersonDirectoryApi.Persistence.Repositories;
 
-public class PersonRepository : Repository<Person>, IRepository<Person>
+public interface IPersonRepository : IRepository<Person>
+{
+    Task<Person?> GetByPersonalNumberAsync(string personalNumber, CancellationToken cancellationToken);
+    Task<List<Person>> GetAllAsync(PersonSearchDto personSearchDto, CancellationToken cancellationToken);
+}
+
+public class PersonRepository : Repository<Person>, IPersonRepository
 {
     private readonly PersonContext _context;
 
@@ -13,14 +20,47 @@ public class PersonRepository : Repository<Person>, IRepository<Person>
         _context = context;
     }
 
-    public new Task<Person?> GetAsync(Expression<Func<Person, bool>> predicate, CancellationToken cancellationToken)
+    public Task<Person?> GetByPersonalNumberAsync(string personalNumber, CancellationToken cancellationToken)
     {
         return _context.Persons
             .Include(person => person.City)
             .Include(person => person.PhoneNumbers)
             .Include(person => person.Relationships)
             .ThenInclude(x => x.RelatedPerson)
-            .FirstOrDefaultAsync(predicate, cancellationToken);
+            .FirstOrDefaultAsync(person => person.PersonalNumber == personalNumber, cancellationToken);
+    }
+
+    public Task<List<Person>> GetAllAsync(PersonSearchDto personSearchDto, CancellationToken cancellationToken)
+    {
+        var query = _context.Persons
+            .Include(person => person.City)
+            .Include(person => person.PhoneNumbers)
+            .Include(person => person.Relationships)
+            .ThenInclude(x => x.RelatedPerson)
+            .AsQueryable();
+        
+        if(!string.IsNullOrEmpty(personSearchDto.PersonalNumber))
+            query = query.Where(person => person.PersonalNumber.Contains(personSearchDto.PersonalNumber));
+        
+        if(!string.IsNullOrEmpty(personSearchDto.FirstName))
+            query = query.Where(person => person.FirstName.Contains(personSearchDto.FirstName));
+        
+        if(!string.IsNullOrEmpty(personSearchDto.LastName))
+            query = query.Where(person => person.LastName.Contains(personSearchDto.LastName));
+
+        if(personSearchDto.BirthDate is not null)
+            query = query.Where(person => person.BirthDate == personSearchDto.BirthDate);
+        
+        if(personSearchDto.CityId is not null)
+            query = query.Where(person => person.CityId == personSearchDto.CityId);
+        
+        if(!string.IsNullOrEmpty(personSearchDto.PhoneNumber))
+            query = query.Where(person => person.PhoneNumbers.Any(number => number.Number == personSearchDto.PhoneNumber));
+        
+        return query
+            .Take(personSearchDto.PageSize)
+            .Skip((personSearchDto.PageNumber - 1) * personSearchDto.PageSize)
+            .ToListAsync(cancellationToken);
     }
 }
 
@@ -35,11 +75,6 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
         _dbSet = context.Set<TEntity>();
     }
 
-    public async Task<TEntity?> GetByIdAsync(int id) => await _dbSet.FindAsync(id);
-
-    public Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken) =>
-        _dbSet.FirstOrDefaultAsync(predicate, cancellationToken);
-
     public Task<List<TEntity>> GetAsync(int pageNumber, int pageSize, CancellationToken cancellationToken) => _dbSet
         .Take(pageSize)
         .Skip((pageNumber - 1) * pageSize)
@@ -49,11 +84,7 @@ public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
 
     public async Task AddAsync(TEntity entity, CancellationToken cancellationToken) => await _dbSet.AddAsync(entity, cancellationToken);
 
-    public Task AddRangeAsync(IEnumerable<TEntity> entities) => _dbSet.AddRangeAsync(entities);
-
     public void Update(TEntity entity) => _context.Update(entity);
 
     public void Remove(TEntity entity) => _dbSet.Remove(entity);
-
-    public void RemoveRange(IEnumerable<TEntity> entities) => _dbSet.RemoveRange(entities);
 }

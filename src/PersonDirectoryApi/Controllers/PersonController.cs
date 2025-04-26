@@ -28,6 +28,19 @@ public class PersonController : ControllerBase
         return Ok(dto);
     }
     
+    [HttpGet]
+    [ProducesResponseType<List<PersonDto>>(StatusCodes.Status200OK)]
+    [ValidationActionFilter<PersonSearchDto>]
+    public async Task<IActionResult> Get([FromQuery] PersonSearchDto personSearchDto, CancellationToken cancellationToken)
+    {
+        var dto = await _personService.GetAllAsync(personSearchDto, cancellationToken);
+        
+        if (dto.Count == 0)
+            return NoContent();
+
+        return Ok(dto);
+    }
+    
     [HttpPost]
     [ValidationActionFilter<PersonCreateDto>]
     public async Task<IActionResult> Create([FromBody] PersonCreateDto personCreateDto, CancellationToken cancellationToken)

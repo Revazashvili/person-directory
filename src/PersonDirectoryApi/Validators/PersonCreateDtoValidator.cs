@@ -55,7 +55,7 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
 
         RuleFor(x => x.CityId)
             .GreaterThan(0)
-            .WithMessage(localizer[LocalizedStringKeys.FieldRequired])
+            .WithMessage(localizer[LocalizedStringKeys.FieldGreaterThan0])
             .MustAsync((dto, val, cancellationToken) =>
             {
                 return unitOfWork.Cities.ExistsAsync(city => city.Id == dto.CityId, cancellationToken);
