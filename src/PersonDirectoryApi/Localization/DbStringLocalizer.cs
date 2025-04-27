@@ -36,13 +36,5 @@ public class DbStringLocalizer : IStringLocalizer
             .ToDictionary(x => x.Key,
                 x => x.ToDictionary(y => y.Culture, y => y.Value)
             );
-
-        Console.WriteLine(JsonSerializer.Serialize(_localizedStrings));
-        
-        if (_localizedStrings.TryGetValue(LocalizedStringKeys.FieldRequired, out var results)
-            && results.TryGetValue("ka", out var value))
-        {
-            Console.WriteLine(value);
-        }
     }
 }
