@@ -1,6 +1,22 @@
 ﻿services:
-  persondirectoryapi:
-    image: persondirectoryapi
+  person-directory-api:
+    pull_policy: always
     build:
       context: .
       dockerfile: src/PersonDirectoryApi/Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - person-directory-db
+  
+  person-directory-db:
+    container_name: person-directory-db
+    image: postgres:16
+    restart: always
+    ports:
+      - "5432:5432"
+    volumes:
+      - ~/temp/postgres:/var/lib/postgresql/data:rw
+    environment:
+      - POSTGRES_PASSWORD=mysecretpassword
+      - POSTGRES_USER=postgres

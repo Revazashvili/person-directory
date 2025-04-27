@@ -65,4 +65,16 @@ app.UseSwagger();
 app.UseSwaggerUI();
 app.MapControllers();
 
+// must not be used in production environment
+try
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<PersonContext>();
+
+    context.Database.EnsureDeleted();
+    context.Database.EnsureCreated();
+    context.Database.Migrate();
+}
+catch {}
+
 app.Run();
