@@ -22,5 +22,19 @@ public class CityConfiguration : IEntityTypeConfiguration<City>
             .IsUnique();
                 
         builder.ToTable("cities");
+
+        builder.HasData(new List<City>
+        {
+            new(1, "Tbilisi"),
+            new(2, "Batumi"),
+            new(3, "Kutaisi"),
+            new(4, "Rustavi"),
+            new(5, "Zugdidi"),
+            new(6, "Gori"),
+            new(7, "Poti"),
+            new(8, "Telavi"),
+            new(9, "Samtredia"),
+            new(10, "Khashuri"),
+        });
     }
 }
