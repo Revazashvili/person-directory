@@ -14,6 +14,8 @@ public interface IPersonService
     Task ChangeImageAsync(PersonImageChangeDto imageChangeDto, CancellationToken cancellationToken);
     Task CreateRelationship(RelationshipCreateDto relationshipCreateDto, CancellationToken cancellationToken);
     Task RemoveRelationship(RelationshipRemoveDto relationshipRemoveDto, CancellationToken cancellationToken);
+
+    Task<List<RelationshipReportDto>> GetRelationshipReportAsync(GetRelationshipReportDto getRelationshipReportDto, CancellationToken cancellationToken);
 }
 
 internal class PersonService : IPersonService
@@ -123,5 +125,31 @@ internal class PersonService : IPersonService
         
         _unitOfWork.Persons.Update(person);
         await _unitOfWork.CompleteAsync(cancellationToken);
+    }
+
+    public async Task<List<RelationshipReportDto>> GetRelationshipReportAsync(GetRelationshipReportDto getRelationshipReportDto,CancellationToken cancellationToken)
+    {
+
+        var persons = await _unitOfWork.Persons.GetAllAsync(
+            PersonSearchDto.ForPaging(getRelationshipReportDto.PageNumber, getRelationshipReportDto.PageSize),
+            cancellationToken);
+        
+        var relationshipsReportDtos = persons.Select(person =>
+        {
+            var relationshipsByType = person.Relationships
+                .GroupBy(r => r.Type)
+                .Select(g => new PersonRelationshipsByTypeDto(g.Key, g.Count()))
+                .ToList();
+
+            return new RelationshipReportDto(person.PersonalNumber,
+                person.FirstName,
+                person.LastName,
+                person.Gender,
+                person.BirthDate,
+                person.ImageUrl, 
+                relationshipsByType);
+        }).ToList();
+
+        return relationshipsReportDtos;
     }
 }

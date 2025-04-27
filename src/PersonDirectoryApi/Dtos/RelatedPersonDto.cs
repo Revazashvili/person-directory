@@ -5,7 +5,7 @@ using PersonDirectoryApi.Persistence.Repositories;
 
 namespace PersonDirectoryApi.Dtos;
 
-public record RelatedPersonDto(RelationType Type, string RelatedPersonPersonalNumber);
+public record RelatedPersonDto(RelationshipType Type, string RelatedPersonPersonalNumber);
 
 public class RelatedPersonDtoValidator : AbstractValidator<RelatedPersonDto>
 {

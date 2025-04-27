@@ -1,6 +1,6 @@
 namespace PersonDirectoryApi.Enums;
 
-public enum RelationType
+public enum RelationshipType
 {
     Colleague,
     Acquaintance,
