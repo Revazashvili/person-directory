@@ -32,14 +32,12 @@ public class ValidationActionFilter<T> : ActionFilterAttribute where T : class
     }
 }
 
+public record ValidationError(string PropertyName, string ErrorMessage);
+
 public class ValidationResultObject : BadRequestObjectResult
 {
     public ValidationResultObject(ValidationResult validationResult) : base(validationResult.Errors
-        .Select(x => new
-        {
-            x.PropertyName,
-            x.ErrorMessage
-        })
+        .Select(x => new ValidationError(x.PropertyName, x.ErrorMessage))
         .ToList()
     )
     {

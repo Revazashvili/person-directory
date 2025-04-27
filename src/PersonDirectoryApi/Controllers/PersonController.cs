@@ -18,30 +18,38 @@ public class PersonController : ControllerBase
 
     [HttpGet("{personalNumber}")]
     [ProducesResponseType<PersonDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Get([FromRoute] string personalNumber, CancellationToken cancellationToken)
     {
         var dto = await _personService.GetAsync(personalNumber, cancellationToken);
         
         if (dto is null)
-            return NoContent();
+            return NotFound();
 
         return Ok(dto);
     }
     
     [HttpGet]
     [ProducesResponseType<List<PersonDto>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<ValidationError>>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ValidationActionFilter<PersonSearchDto>]
     public async Task<IActionResult> Get([FromQuery] PersonSearchDto personSearchDto, CancellationToken cancellationToken)
     {
         var dto = await _personService.GetAllAsync(personSearchDto, cancellationToken);
         
         if (dto.Count == 0)
-            return NoContent();
+            return NotFound();
 
         return Ok(dto);
     }
     
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType<List<ValidationError>>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ValidationActionFilter<PersonCreateDto>]
     public async Task<IActionResult> Create([FromBody] PersonCreateDto personCreateDto, CancellationToken cancellationToken)
     {
@@ -51,6 +59,9 @@ public class PersonController : ControllerBase
     }
     
     [HttpPatch]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<ValidationError>>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ValidationActionFilter<PersonUpdateDto>]
     public async Task<IActionResult> Update([FromBody] PersonUpdateDto personUpdateDto, CancellationToken cancellationToken)
     {
@@ -60,6 +71,9 @@ public class PersonController : ControllerBase
     }
     
     [HttpDelete("{PersonalNumber}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<ValidationError>>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ValidationActionFilter<PersonDeleteDto>]
     public async Task<IActionResult> Delete([FromRoute] PersonDeleteDto personDeleteDto, CancellationToken cancellationToken)
     {
@@ -69,6 +83,9 @@ public class PersonController : ControllerBase
     }
     
     [HttpPatch("{PersonalNumber}/image/{ImageUrl}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<ValidationError>>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ValidationActionFilter<PersonImageChangeDto>]
     public async Task<IActionResult> ChangeImage([FromRoute] PersonImageChangeDto personImageChangeDto, CancellationToken cancellationToken)
     {
@@ -78,6 +95,9 @@ public class PersonController : ControllerBase
     }
     
     [HttpPost("{personalNumber}/relationship")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType<List<ValidationError>>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> CreateRelationship([FromRoute] string personalNumber, [FromBody] RelatedPersonDto relatedPerson, 
         CancellationToken cancellationToken, IValidator<RelationshipCreateDto> validator)
     {
@@ -94,11 +114,14 @@ public class PersonController : ControllerBase
     }
     
     [HttpDelete("{PersonalNumber}/relationship/{RelatedPersonPersonalNumber}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType<List<ValidationError>>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [ValidationActionFilter<RelationshipRemoveDto>]
     public async Task<IActionResult> RemoveRelationship([FromRoute] RelationshipRemoveDto relationshipRemoveDto, CancellationToken cancellationToken)
     {
         await _personService.RemoveRelationship(relationshipRemoveDto, cancellationToken);
 
-        return Created();
+        return Ok();
     }
 }

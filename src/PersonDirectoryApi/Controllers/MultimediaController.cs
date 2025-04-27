@@ -15,6 +15,8 @@ public class MultimediaController : ControllerBase
     }
     
     [HttpGet("{fileName}")]
+    [ProducesResponseType<FileContentResult>(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Get([FromRoute] string fileName, CancellationToken cancellationToken)
     {
         var multimedia = await _multimediaService.GetAsync(fileName, cancellationToken);
@@ -23,6 +25,8 @@ public class MultimediaController : ControllerBase
     }
     
     [HttpPost]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Upload(IFormFile file, CancellationToken cancellationToken)
     {
         var url = await _multimediaService.UploadAsync(file, cancellationToken);
@@ -31,6 +35,8 @@ public class MultimediaController : ControllerBase
     }
     
     [HttpDelete("{fileName}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<IActionResult> Remove([FromRoute] string fileName)
     {
         await _multimediaService.RemoveByNameAsync(fileName);
