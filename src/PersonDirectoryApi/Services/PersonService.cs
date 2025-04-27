@@ -33,6 +33,9 @@ internal class PersonService : IPersonService
     {
         var person = await _unitOfWork.Persons.GetByPersonalNumberAsync(personalNumber, cancellationToken);
 
+        if (person is null)
+            return null;
+        
         return person;
     }
 
