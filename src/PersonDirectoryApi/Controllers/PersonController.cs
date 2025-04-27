@@ -59,9 +59,9 @@ public class PersonController : ControllerBase
         return Ok();
     }
     
-    [HttpDelete]
+    [HttpDelete("{PersonalNumber}")]
     [ValidationActionFilter<PersonDeleteDto>]
-    public async Task<IActionResult> Delete([FromQuery] PersonDeleteDto personDeleteDto, CancellationToken cancellationToken)
+    public async Task<IActionResult> Delete([FromRoute] PersonDeleteDto personDeleteDto, CancellationToken cancellationToken)
     {
         await _personService.DeleteAsync(personDeleteDto, cancellationToken);
 
