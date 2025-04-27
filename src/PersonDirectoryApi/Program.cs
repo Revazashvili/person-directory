@@ -3,6 +3,7 @@ using System.Reflection;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using PersonDirectoryApi;
 using PersonDirectoryApi.Localization;
 using PersonDirectoryApi.Persistence;
 using PersonDirectoryApi.Persistence.Repositories;
@@ -15,6 +16,7 @@ builder.Services.AddControllers();
 builder.Services.AddValidatorsFromAssemblies([Assembly.GetExecutingAssembly()]);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen();
+builder.Logging.AddConsole();
 
 builder.Services.Configure<ApiBehaviorOptions>(options =>
 {
@@ -38,6 +40,7 @@ builder.Services.AddDbContext<PersonContext>(builder =>
 
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.MapOpenApi();
 
 app.Use((context, next) =>
