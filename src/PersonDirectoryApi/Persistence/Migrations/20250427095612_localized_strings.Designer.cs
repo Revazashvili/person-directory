@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using PersonDirectoryApi.Persistence;
@@ -11,9 +12,11 @@ using PersonDirectoryApi.Persistence;
 namespace PersonDirectoryApi.Persistence.Migrations
 {
     [DbContext(typeof(PersonContext))]
-    partial class PersonContextModelSnapshot : ModelSnapshot
+    [Migration("20250427095612_localized_strings")]
+    partial class localized_strings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

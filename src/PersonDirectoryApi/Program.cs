@@ -23,7 +23,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddSingleton<IStringLocalizer, StringLocalizer>();
+builder.Services.AddSingleton<IStringLocalizer, DbStringLocalizer>();
 builder.Services.AddSingleton<IMultimediaService, MultimediaService>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<IPersonService, PersonService>();
