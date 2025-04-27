@@ -1,6 +1,0 @@
-@PersonDirectoryApi_HostAddress = http://localhost:5223
-
-GET {{PersonDirectoryApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
