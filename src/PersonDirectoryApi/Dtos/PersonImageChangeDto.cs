@@ -20,7 +20,6 @@ public class PersonImageUploadDtoValidator : AbstractValidator<PersonImageChange
             .WithMessage(localizer[LocalizedStringKeys.PersonDoesNotExists]);
         
         RuleFor(x => x.ImageUrl)
-            .NotEmpty()
-            .WithMessage(localizer[LocalizedStringKeys.FieldRequired]);
+            .SetValidator(new ImageUrlValidator(localizer));
     }
 }

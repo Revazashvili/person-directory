@@ -53,8 +53,7 @@ public class PersonCreateDtoValidator : AbstractValidator<PersonCreateDto>
             .WithMessage(localizer[LocalizedStringKeys.PersonalNumberAlreadyExists]);
 
         RuleFor(x => x.ImageUrl)
-            .NotEmpty()
-            .WithMessage(localizer[LocalizedStringKeys.FieldRequired]);
+            .SetValidator(new ImageUrlValidator(localizer));
 
         RuleFor(x => x.BirthDate)
             .NotEmpty()
