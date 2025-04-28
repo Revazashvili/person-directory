@@ -4,18 +4,21 @@ using PersonDirectoryApi.Entities;
 
 namespace PersonDirectoryApi.Persistence.Repositories;
 
-public interface IPersonRepository : IRepository<Person>
+public interface IPersonRepository
 {
     Task<Person?> GetByPersonalNumberAsync(string personalNumber, CancellationToken cancellationToken);
     Task<List<Person>> GetAllAsync(PersonSearchDto personSearchDto, CancellationToken cancellationToken);
     Task<bool> ExistsWithPersonalNumberAsync(string personalNumber, CancellationToken cancellationToken);
+    Task AddAsync(Person person, CancellationToken cancellationToken);
+    void Update(Person person);
+    void Remove(Person person);
 }
 
-public class PersonRepository : Repository<Person>, IPersonRepository
+public class PersonRepository : IPersonRepository
 {
     private readonly PersonContext _context;
 
-    public PersonRepository(PersonContext context) : base(context)
+    public PersonRepository(PersonContext context)
     {
         _context = context;
     }
@@ -65,4 +68,11 @@ public class PersonRepository : Repository<Person>, IPersonRepository
 
     public Task<bool> ExistsWithPersonalNumberAsync(string personalNumber, CancellationToken cancellationToken) => 
         _context.Persons.AnyAsync(person => person.PersonalNumber == personalNumber, cancellationToken);
+
+    public async Task AddAsync(Person person, CancellationToken cancellationToken) =>
+        await _context.Persons.AddAsync(person, cancellationToken);
+
+    public void Update(Person person) => _context.Persons.Update(person);
+
+    public void Remove(Person person) => _context.Persons.Remove(person);
 }
